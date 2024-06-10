@@ -47,6 +47,36 @@
 
     mysqli_close($conn);
 
+    // PostgreSQL Connection
+    $pgsql_conn = pg_connect("host=postgres dbname=myDb user=user password=test");
+
+    if (!$pgsql_conn) {
+      echo "Failed to connect to PostgreSQL: " . pg_last_error();
+      exit();
+    }
+
+    $pgsql_query = "SELECT * FROM Person";
+    $pgsql_result = pg_query($pgsql_conn, $pgsql_query);
+
+    if (!$pgsql_result) {
+      echo "An error occurred.\n";
+      exit();
+    }
+
+    echo '<h2>PostgreSQL Data</h2>';
+    echo '<table class="table table-striped">';
+    echo '<thead><tr><th>id</th><th>name</th></tr></thead>';
+    while ($row = pg_fetch_assoc($pgsql_result)) {
+        echo '<tr>';
+        echo '<td>' . $row['id'] . '</td>';
+        echo '<td>' . $row['name'] . '</td>';
+        echo '</tr>';
+    }
+    echo '</table>';
+
+    pg_free_result($pgsql_result);
+    pg_close($pgsql_conn);
+
     ?>
     </div>
 </body>
